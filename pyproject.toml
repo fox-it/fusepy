@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=65.5.0", "setuptools_scm[toml]>=6.4.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fusepy3"
+description =  "Simple ctypes bindings for FUSE3"
+readme = "README"
+requires-python = "~=3.9"
+license.text = "ICS"
+authors = [
+  {name = "Giorgos Verigakis", email = "verigak@gmail.com"}
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: ISC License (ISCL)",
+    "Operating System :: Unix",
+    "Programming Language :: Python :: 3",
+    "Topic :: System :: Filesystems",
+]
+dynamic = ["version"]
+
+[project.urls]
+
+[project.optional-dependencies]
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+known_first_party = ["fuse3"]
+
+[tool.setuptools]
+license-files = ["LICENSE"]
+
+[tool.setuptools.packages.find]
+include = ["fuse3.*", "fuse3"]
+
+[tool.setuptools_scm]

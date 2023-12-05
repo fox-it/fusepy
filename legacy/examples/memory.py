@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
 import logging
-
 from collections import defaultdict
 from errno import ENOENT
 from stat import S_IFDIR, S_IFLNK, S_IFREG
 from time import time
 
-from fuse import FUSE, FuseOSError, Operations, LoggingMixIn
+from fuse import FUSE3, FuseOSError, LoggingMixIn, Operations
 
 if not hasattr(__builtins__, "bytes"):
     bytes = str
@@ -121,9 +120,7 @@ class Memory(LoggingMixIn, Operations):
         return dict(f_bsize=512, f_blocks=4096, f_bavail=2048)
 
     def symlink(self, target, source):
-        self.files[target] = dict(
-            st_mode=(S_IFLNK | 0o777), st_nlink=1, st_size=len(source)
-        )
+        self.files[target] = dict(st_mode=(S_IFLNK | 0o777), st_nlink=1, st_size=len(source))
 
         self.data[target] = source
 
@@ -162,4 +159,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
-    fuse = FUSE(Memory(), args.mount, foreground=True, allow_other=True)
+    fuse = FUSE3(Memory(), args.mount, foreground=True, allow_other=True)

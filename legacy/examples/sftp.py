@@ -1,12 +1,11 @@
 #!/usr/bin/env python
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
 import logging
-import paramiko
-
 from errno import ENOENT
 
-from fuse import FUSE, FuseOSError, Operations, LoggingMixIn
+import paramiko
+from fuse import FUSE3, FuseOSError, LoggingMixIn, Operations
 
 
 class SFTP(LoggingMixIn, Operations):
@@ -114,7 +113,7 @@ if __name__ == "__main__":
         if "@" in args.host:
             args.login, _, args.host = args.host.partition("@")
 
-    fuse = FUSE(
+    fuse = FUSE3(
         SFTP(args.host, username=args.login),
         args.mount,
         foreground=True,

@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
 import logging
 import os
-
 from errno import EACCES
 from os.path import realpath
 from threading import Lock
 
-from fuse import FUSE, FuseOSError, Operations, LoggingMixIn
+from fuse import FUSE3, FuseOSError, LoggingMixIn, Operations
 
 
 class Loopback(LoggingMixIn, Operations):
@@ -125,4 +124,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
-    fuse = FUSE(Loopback(args.root), args.mount, foreground=True, allow_other=True)
+    fuse = FUSE3(Loopback(args.root), args.mount, foreground=True, allow_other=True)

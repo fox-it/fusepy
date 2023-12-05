@@ -1,21 +1,9 @@
-fusepy
-======
+fusepy3
+=======
 
-    **NOTE**: *This project has moved to be under a GitHub organization and can
-    be found at https://github.com/fusepy/fusepy. The project has new
-    maintainers and will be looking to incorporate pull requests in a more
-    timely manner. If you would like to help maintain this package please open
-    a pull request and demonstrate willingness to help (we will leave
-    maintainer criteria up to the current maintainers).*
+``fusepy3`` is a Python module that provides a simple interface to FUSE_. It's a port of the `fusepy`_ module for compatibility with libfuse3.
 
-``fusepy`` is a Python module that provides a simple interface to FUSE_ and
-MacFUSE_. It's just one file and is implemented using ctypes.
-
-The original version of ``fusepy`` was hosted on `Google Code`_, but is now
-`officially hosted on GitHub`_.
-
-``fusepy`` is written in 2x syntax, but trying to pay attention to bytes and
-other changes 3x would care about.
+``fusepy3`` is written in 3x syntax.
 
 examples
 --------
@@ -28,23 +16,22 @@ See some examples of how you can use fusepy:
 
 To get started download_ fusepy or just browse the source_.
 
-fusepy requires FUSE 2.6 (or later) and runs on:
+fusepy requires FUSE 3 (or later) and runs on:
 
 - Linux (i386, x86_64, PPC, arm64, MIPS)
 - Mac OS X (Intel, PowerPC)
 - FreeBSD (i386, amd64)
 
 
+.. _fusepy: https://github.com/fusepy/fusepy
 .. _FUSE: http://fuse.sourceforge.net/
-.. _MacFUSE: http://code.google.com/p/macfuse/
-.. _`Google Code`: http://code.google.com/p/fusepy/
 
 .. _officially hosted on GitHub: source_
-.. _download: https://github.com/fusepy/fusepy/zipball/master
-.. _source: http://github.com/fusepy/fusepy
+.. _download: https://github.com/fox-it/fusepy3/zipball/master
+.. _source: https://github.com/fox-it/fusepy3
 
 .. examples
-.. _memory: http://github.com/fusepy/fusepy/blob/master/examples/memory.py
-.. _loopback: http://github.com/fusepy/fusepy/blob/master/examples/loopback.py
-.. _context: http://github.com/fusepy/fusepy/blob/master/examples/context.py
-.. _sftp: http://github.com/fusepy/fusepy/blob/master/examples/sftp.py
+.. _memory: https://github.com/fox-it/fusepy3/blob/master/legacy/examples/memory.py
+.. _loopback: https://github.com/fox-it/fusepy3/blob/master/legacy/examples/loopback.py
+.. _context: https://github.com/fox-it/fusepy3/blob/master/legacy/examples/context.py
+.. _sftp: https://github.com/fox-it/fusepy3/blob/master/legacy/examples/sftp.py
