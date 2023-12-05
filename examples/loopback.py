@@ -40,9 +40,19 @@ class Loopback(LoggingMixIn, Operations):
 
     def getattr(self, path, fh=None):
         st = os.lstat(path)
-        return dict((key, getattr(st, key)) for key in (
-            'st_atime', 'st_ctime', 'st_gid', 'st_mode', 'st_mtime',
-            'st_nlink', 'st_size', 'st_uid'))
+        return dict(
+            (key, getattr(st, key))
+            for key in (
+                "st_atime",
+                "st_ctime",
+                "st_gid",
+                "st_mode",
+                "st_mtime",
+                "st_nlink",
+                "st_size",
+                "st_uid",
+            )
+        )
 
     getxattr = None
 
@@ -60,7 +70,7 @@ class Loopback(LoggingMixIn, Operations):
             return os.read(fh, size)
 
     def readdir(self, path, fh):
-        return ['.', '..'] + os.listdir(path)
+        return [".", ".."] + os.listdir(path)
 
     readlink = os.readlink
 
@@ -74,15 +84,27 @@ class Loopback(LoggingMixIn, Operations):
 
     def statfs(self, path):
         stv = os.statvfs(path)
-        return dict((key, getattr(stv, key)) for key in (
-            'f_bavail', 'f_bfree', 'f_blocks', 'f_bsize', 'f_favail',
-            'f_ffree', 'f_files', 'f_flag', 'f_frsize', 'f_namemax'))
+        return dict(
+            (key, getattr(stv, key))
+            for key in (
+                "f_bavail",
+                "f_bfree",
+                "f_blocks",
+                "f_bsize",
+                "f_favail",
+                "f_ffree",
+                "f_files",
+                "f_flag",
+                "f_frsize",
+                "f_namemax",
+            )
+        )
 
     def symlink(self, target, source):
         return os.symlink(source, target)
 
     def truncate(self, path, length, fh=None):
-        with open(path, 'r+') as f:
+        with open(path, "r+") as f:
             f.truncate(length)
 
     unlink = os.unlink
@@ -94,13 +116,13 @@ class Loopback(LoggingMixIn, Operations):
             return os.write(fh, data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('root')
-    parser.add_argument('mount')
+    parser.add_argument("root")
+    parser.add_argument("mount")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
-    fuse = FUSE(
-        Loopback(args.root), args.mount, foreground=True, allow_other=True)
+    fuse = FUSE(Loopback(args.root), args.mount, foreground=True, allow_other=True)

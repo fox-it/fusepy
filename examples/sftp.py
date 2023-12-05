@@ -10,11 +10,11 @@ from fuse import FUSE, FuseOSError, Operations, LoggingMixIn
 
 
 class SFTP(LoggingMixIn, Operations):
-    '''
+    """
     A simple SFTP filesystem. Requires paramiko: http://www.lag.net/paramiko/
 
     You need to be able to login to remote host without entering a password.
-    '''
+    """
 
     def __init__(self, host, username=None, port=22):
         self.client = paramiko.SSHClient()
@@ -30,7 +30,7 @@ class SFTP(LoggingMixIn, Operations):
         return self.sftp.chown(path, uid, gid)
 
     def create(self, path, mode):
-        f = self.sftp.open(path, 'w')
+        f = self.sftp.open(path, "w")
         f.chmod(mode)
         f.close()
         return 0
@@ -45,8 +45,17 @@ class SFTP(LoggingMixIn, Operations):
         except IOError:
             raise FuseOSError(ENOENT)
 
-        return dict((key, getattr(st, key)) for key in (
-            'st_atime', 'st_gid', 'st_mode', 'st_mtime', 'st_size', 'st_uid'))
+        return dict(
+            (key, getattr(st, key))
+            for key in (
+                "st_atime",
+                "st_gid",
+                "st_mode",
+                "st_mtime",
+                "st_size",
+                "st_uid",
+            )
+        )
 
     def mkdir(self, path, mode):
         return self.sftp.mkdir(path, mode)
@@ -59,8 +68,7 @@ class SFTP(LoggingMixIn, Operations):
         return buf
 
     def readdir(self, path, fh):
-        return ['.', '..'] + [name.encode('utf-8')
-                              for name in self.sftp.listdir(path)]
+        return [".", ".."] + [name.encode("utf-8") for name in self.sftp.listdir(path)]
 
     def readlink(self, path):
         return self.sftp.readlink(path)
@@ -84,30 +92,32 @@ class SFTP(LoggingMixIn, Operations):
         return self.sftp.utime(path, times)
 
     def write(self, path, data, offset, fh):
-        f = self.sftp.open(path, 'r+')
+        f = self.sftp.open(path, "r+")
         f.seek(offset, 0)
         f.write(data)
         f.close()
         return len(data)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import argparse
+
     parser = argparse.ArgumentParser()
-    parser.add_argument('-l', dest='login')
-    parser.add_argument('host')
-    parser.add_argument('mount')
+    parser.add_argument("-l", dest="login")
+    parser.add_argument("host")
+    parser.add_argument("mount")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
 
     if not args.login:
-        if '@' in args.host:
-            args.login, _, args.host = args.host.partition('@')
+        if "@" in args.host:
+            args.login, _, args.host = args.host.partition("@")
 
     fuse = FUSE(
         SFTP(args.host, username=args.login),
         args.mount,
         foreground=True,
         nothreads=True,
-        allow_other=True)
+        allow_other=True,
+    )
