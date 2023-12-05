@@ -1,13 +1,12 @@
 #!/usr/bin/env python
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
 import logging
-
 from errno import ENOENT
 from stat import S_IFDIR, S_IFREG
 from time import time
 
-from fuse import FUSE, FuseOSError, Operations, LoggingMixIn, fuse_get_context
+from fuse import FUSE3, FuseOSError, LoggingMixIn, Operations, fuse_get_context
 
 
 class Context(LoggingMixIn, Operations):
@@ -69,4 +68,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.DEBUG)
-    fuse = FUSE(Context(), args.mount, foreground=True, ro=True, allow_other=True)
+    fuse = FUSE3(Context(), args.mount, foreground=True, ro=True, allow_other=True)

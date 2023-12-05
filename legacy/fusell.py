@@ -11,31 +11,30 @@
 # WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 # ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 # OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-from __future__ import print_function, absolute_import, division
+from __future__ import absolute_import, division, print_function
 
 import ctypes
 import errno
 import os
 import warnings
-
 from ctypes.util import find_library
 from platform import machine, system
-from signal import signal, SIGINT, SIG_DFL
+from signal import SIG_DFL, SIGINT, signal
 from stat import S_IFDIR
 
+from fusepy.util import _find_libfuse
 
 _system = system()
 _machine = machine()
 
 _libfuse_path = os.environ.get("FUSE_LIBRARY_PATH")
 if not _libfuse_path:
+    _libfuse_path = _find_libfuse()
     if _system == "Darwin":
         # libfuse dependency
         _libiconv = ctypes.CDLL(find_library("iconv"), ctypes.RTLD_GLOBAL)
 
-        _libfuse_path = (
-            find_library("fuse4x") or find_library("osxfuse") or find_library("fuse")
-        )
+        _libfuse_path = find_library("fuse4x") or find_library("osxfuse") or find_library("fuse")
     else:
         _libfuse_path = find_library("fuse")
 
@@ -323,16 +322,12 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ("getattr", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, fuse_file_info_p)),
         (
             "setattr",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, c_stat_p, ctypes.c_int, fuse_file_info_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, c_stat_p, ctypes.c_int, fuse_file_info_p),
         ),
         ("readlink", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t)),
         (
             "mknod",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_char_p, c_mode_t, c_dev_t
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_char_p, c_mode_t, c_dev_t),
         ),
         (
             "mkdir",
@@ -342,9 +337,7 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ("rmdir", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_char_p)),
         (
             "symlink",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, ctypes.c_char_p, fuse_ino_t, ctypes.c_char_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, ctypes.c_char_p, fuse_ino_t, ctypes.c_char_p),
         ),
         (
             "rename",
@@ -364,9 +357,7 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ("open", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, fuse_file_info_p)),
         (
             "read",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_size_t, c_off_t, fuse_file_info_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_size_t, c_off_t, fuse_file_info_p),
         ),
         (
             "write",
@@ -384,16 +375,12 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ("release", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, fuse_file_info_p)),
         (
             "fsync",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_int, fuse_file_info_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_int, fuse_file_info_p),
         ),
         ("opendir", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, fuse_file_info_p)),
         (
             "readdir",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_size_t, c_off_t, fuse_file_info_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_size_t, c_off_t, fuse_file_info_p),
         ),
         (
             "releasedir",
@@ -401,9 +388,7 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ),
         (
             "fsyncdir",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_int, fuse_file_info_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_int, fuse_file_info_p),
         ),
         ("statfs", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t)),
         (
@@ -420,9 +405,7 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ),
         (
             "getxattr",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_char_p, ctypes.c_size_t
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_char_p, ctypes.c_size_t),
         ),
         ("listxattr", ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_size_t)),
         (
@@ -443,9 +426,7 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ),
         (
             "getlk",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, fuse_file_info_p, ctypes.c_void_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, fuse_file_info_p, ctypes.c_void_p),
         ),
         (
             "setlk",
@@ -460,9 +441,7 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ),
         (
             "bmap",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_size_t, ctypes.c_uint64
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_size_t, ctypes.c_uint64),
         ),
         (
             "ioctl",
@@ -481,21 +460,15 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ),
         (
             "poll",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, fuse_file_info_p, ctypes.c_void_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, fuse_file_info_p, ctypes.c_void_p),
         ),
         (
             "write_buf",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, ctypes.c_void_p, c_off_t, fuse_file_info_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, ctypes.c_void_p, c_off_t, fuse_file_info_p),
         ),
         (
             "retrieve_reply",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, ctypes.c_void_p, fuse_ino_t, c_off_t, ctypes.c_void_p
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, ctypes.c_void_p, fuse_ino_t, c_off_t, ctypes.c_void_p),
         ),
         (
             "forget_multi",
@@ -503,9 +476,7 @@ class fuse_lowlevel_ops(ctypes.Structure):
         ),
         (
             "flock",
-            ctypes.CFUNCTYPE(
-                None, fuse_req_t, fuse_ino_t, fuse_file_info_p, ctypes.c_int
-            ),
+            ctypes.CFUNCTYPE(None, fuse_req_t, fuse_ino_t, fuse_file_info_p, ctypes.c_int),
         ),
         (
             "fallocate",
@@ -607,9 +578,7 @@ class FUSELL(object):
         chan = self.libfuse.fuse_mount(mountpoint.encode(encoding), argv)
         assert chan
 
-        session = self.libfuse.fuse_lowlevel_new(
-            argv, ctypes.byref(fuse_ops), ctypes.sizeof(fuse_ops), None
-        )
+        session = self.libfuse.fuse_lowlevel_new(argv, ctypes.byref(fuse_ops), ctypes.sizeof(fuse_ops), None)
         assert session
 
         try:
@@ -653,9 +622,7 @@ class FUSELL(object):
 
     def reply_attr(self, req, attr, attr_timeout):
         st = dict_to_stat(attr, use_ns=self.use_ns)
-        return self.libfuse.fuse_reply_attr(
-            req, ctypes.byref(st), ctypes.c_double(attr_timeout)
-        )
+        return self.libfuse.fuse_reply_attr(req, ctypes.byref(st), ctypes.c_double(attr_timeout))
 
     def reply_readlink(self, req, link):
         return self.libfuse.fuse_reply_readlink(req, link.encode(self.encoding))
@@ -685,16 +652,10 @@ class FUSELL(object):
             entbuf = ctypes.cast(ctypes.addressof(buf) + next, ctypes.c_char_p)
             st = c_stat(**attr)
             next += entsize
-            self.libfuse.fuse_add_direntry(
-                req, entbuf, entsize, name, ctypes.byref(st), next
-            )
+            self.libfuse.fuse_add_direntry(req, entbuf, entsize, name, ctypes.byref(st), next)
 
         if off < bufsize:
-            buf = (
-                ctypes.cast(ctypes.addressof(buf) + off, ctypes.c_char_p)
-                if off
-                else buf
-            )
+            buf = ctypes.cast(ctypes.addressof(buf) + off, ctypes.c_char_p) if off else buf
             return self.libfuse.fuse_reply_buf(req, buf, min(bufsize - off, size))
         else:
             return self.libfuse.fuse_reply_buf(req, None, 0)
@@ -727,9 +688,7 @@ class FUSELL(object):
         self.rmdir(req, parent, name.decode(self.encoding))
 
     def fuse_symlink(self, req, link, parent, name):
-        self.symlink(
-            req, link.decode(self.encoding), parent, name.decode(self.encoding)
-        )
+        self.symlink(req, link.decode(self.encoding), parent, name.decode(self.encoding))
 
     def fuse_rename(self, req, parent, name, newparent, newname):
         self.rename(
@@ -776,9 +735,7 @@ class FUSELL(object):
         self.fsyncdir(req, ino, datasync, struct_to_dict(fi))
 
     def fuse_setxattr(self, req, ino, name, value, size, flags):
-        self.setxattr(
-            req, ino, name.decode(self.encoding), ctypes.string_at(value, size), flags
-        )
+        self.setxattr(req, ino, name.decode(self.encoding), ctypes.string_at(value, size), flags)
 
     def fuse_getxattr(self, req, ino, name, size):
         self.getxattr(req, ino, name.decode(self.encoding), size)
